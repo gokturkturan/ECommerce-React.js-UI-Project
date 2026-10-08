@@ -11,7 +11,7 @@ export default function AuthBootstrap({ children }) {
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth.accessToken);
   const user = useSelector((state) => state.auth.user);
-  const { data, error, isLoading } = useGetMeQuery(undefined, {
+  const { data, error } = useGetMeQuery(undefined, {
     skip: !accessToken || Boolean(user),
   });
 
@@ -23,7 +23,10 @@ export default function AuthBootstrap({ children }) {
     if (error) dispatch(clearCredentials());
   }, [error, dispatch]);
 
-  if (accessToken && !user && isLoading) {
+  // A stored token with no user yet means /users/me is in flight (or about to
+  // start) — render nothing until it resolves, otherwise RequireAuth sees a
+  // momentarily-null user and redirects to /login before rehydration finishes.
+  if (accessToken && !user && !error) {
     return null;
   }
 
