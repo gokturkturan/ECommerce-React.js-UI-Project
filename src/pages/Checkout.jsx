@@ -18,6 +18,18 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [payNow, setPayNow] = useState(true);
+  const [shippingAddress, setShippingAddress] = useState({
+    firstName: '',
+    lastName: '',
+    email: user?.email ?? '',
+    phone: '',
+    address: '',
+    city: '',
+    district: '',
+  });
+
+  const setField = (key) => (e) =>
+    setShippingAddress((a) => ({ ...a, [key]: e.target.value }));
 
   const items = cart?.items ?? [];
   const subtotal = items.reduce((s, i) => s + i.product.price * i.quantity, 0);
@@ -31,7 +43,7 @@ export default function Checkout() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const order = await createOrder().unwrap();
+      const order = await createOrder({ shippingAddress }).unwrap();
       if (payNow) await payOrder(order.id).unwrap();
       toast('Your order has been placed');
       navigate(`/orders/${order.id}`, { state: { justPlaced: true } });
@@ -58,19 +70,36 @@ export default function Checkout() {
               <h3>Shipping address</h3>
             </div>
             <div className="form-grid">
-              <Field label="First name" id="firstName"><input id="firstName" className="input" required autoComplete="given-name" /></Field>
-              <Field label="Last name" id="lastName"><input id="lastName" className="input" required autoComplete="family-name" /></Field>
-              <Field label="Email" id="email">
-                <input id="email" className="input" type="email" defaultValue={user?.email} required autoComplete="email" />
+              <Field label="First name" id="firstName">
+                <input id="firstName" className="input" required autoComplete="given-name"
+                  value={shippingAddress.firstName} onChange={setField('firstName')} />
               </Field>
-              <Field label="Phone" id="phone"><input id="phone" className="input" type="tel" placeholder="(555) 123-4567" required autoComplete="tel" /></Field>
+              <Field label="Last name" id="lastName">
+                <input id="lastName" className="input" required autoComplete="family-name"
+                  value={shippingAddress.lastName} onChange={setField('lastName')} />
+              </Field>
+              <Field label="Email" id="email">
+                <input id="email" className="input" type="email" required autoComplete="email"
+                  value={shippingAddress.email} onChange={setField('email')} />
+              </Field>
+              <Field label="Phone" id="phone">
+                <input id="phone" className="input" type="tel" placeholder="(555) 123-4567" required autoComplete="tel"
+                  value={shippingAddress.phone} onChange={setField('phone')} />
+              </Field>
               <div className="form-grid__full">
                 <Field label="Address" id="address">
-                  <textarea id="address" className="input" rows={3} required autoComplete="street-address" />
+                  <textarea id="address" className="input" rows={3} required autoComplete="street-address"
+                    value={shippingAddress.address} onChange={setField('address')} />
                 </Field>
               </div>
-              <Field label="City" id="city"><input id="city" className="input" required autoComplete="address-level1" /></Field>
-              <Field label="State / ZIP" id="district"><input id="district" className="input" required autoComplete="address-level2" /></Field>
+              <Field label="City" id="city">
+                <input id="city" className="input" required autoComplete="address-level1"
+                  value={shippingAddress.city} onChange={setField('city')} />
+              </Field>
+              <Field label="State / ZIP" id="district">
+                <input id="district" className="input" required autoComplete="address-level2"
+                  value={shippingAddress.district} onChange={setField('district')} />
+              </Field>
             </div>
           </section>
 

@@ -136,7 +136,7 @@ export const api = createApi({
       providesTags: (_result, _error, id) => [{ type: 'Orders', id }],
     }),
     createOrder: builder.mutation({
-      query: () => ({ url: '/orders', method: 'POST' }),
+      query: (body) => ({ url: '/orders', method: 'POST', body }),
       invalidatesTags: ['Cart', 'Orders'],
     }),
     payOrder: builder.mutation({

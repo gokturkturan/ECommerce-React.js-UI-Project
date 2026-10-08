@@ -83,6 +83,21 @@ export default function OrderDetail() {
         )}
       </section>
 
+      {order.shippingAddress && (
+        <section className="card">
+          <h3>Shipping address</h3>
+          <p>
+            {order.shippingAddress.firstName} {order.shippingAddress.lastName}
+            <br />
+            {order.shippingAddress.address}
+            <br />
+            {order.shippingAddress.city}, {order.shippingAddress.district}
+            <br />
+            {order.shippingAddress.phone} · {order.shippingAddress.email}
+          </p>
+        </section>
+      )}
+
       <section className="card order-items">
         <h3>Items</h3>
         <ul>
