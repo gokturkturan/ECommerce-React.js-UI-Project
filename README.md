@@ -98,7 +98,7 @@ To use the admin panel, promote a user to `admin` as described in the backend RE
 
 - **Single-flight token refresh:** when several requests get a `401` at the same moment, let only one of them call `/auth/refresh` and have the others wait for it. With refresh-token rotation, a second parallel refresh is rejected and currently signs the user out.
 - **Refresh token in an httpOnly cookie** instead of `localStorage`, to reduce exposure to XSS
-- Shipping fee calculated by the backend, so the checkout total and the order total always match
+- **Use the server price summary:** the API now returns `summary` (subtotal, shipping fee, total) with every cart response and stores the same amounts on the order; read it instead of the `FREE_SHIPPING_LIMIT` / `SHIPPING_FEE` constants in `utils/format.js`
 - Pagination for product and order lists
 - Component and end-to-end tests (Vitest, React Testing Library, Playwright)
 
